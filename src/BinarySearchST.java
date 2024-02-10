@@ -1,4 +1,4 @@
-public class BinarySearchST<Key extends Comparable, Value> implements SymbolTable<Key, Value> {
+public class BinarySearchST<Key extends Comparable<Key>, Value> implements SymbolTable<Key, Value> {
 
     //private fields
     private Key[] keys;
@@ -6,13 +6,15 @@ public class BinarySearchST<Key extends Comparable, Value> implements SymbolTabl
     private int size;
 
     public BinarySearchST(int capacity) {
-        keys = (Key[]) new Object[capacity];
+        keys = (Key[]) new Comparable[capacity];
         values = (Value[]) new Object[capacity];
 
     }
 
     private int rank(Key key) {
+        //key is what we are looking for
         //returns the index of where the key is located
+        // (or where it should be located)
         int low = 0;
         int high = size - 1;
 
@@ -41,7 +43,27 @@ public class BinarySearchST<Key extends Comparable, Value> implements SymbolTabl
      */
     @Override
     public void put(Key key, Value val) {
+        int i = rank(key);
 
+        if (i < size && key.compareTo(keys[i]) == 0) {
+            //we found the key in the keys array
+            //so that means a value already exists
+            //and we overwrite the existing value and DONE
+            values[i] = val;
+            return;
+        }
+
+        //if we get here, we know the key is not in the array
+        //so shift items over to make room at position i
+        for (int j = size; j > i; j--) {
+            keys[j] = keys[j-1];
+            values[j] = values[j-1];
+        }
+
+        //once we get here, shifting is done and there's a spot
+        keys[i] = key;
+        values[i] = val;
+        size++;
     }
 
     /**
@@ -51,7 +73,21 @@ public class BinarySearchST<Key extends Comparable, Value> implements SymbolTabl
      */
     @Override
     public Value get(Key key) {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        int i = rank(key);
+        //rank() is going to give us the index of where key is located
+        //       OR going to give us the index of where the key should go if it's not there
+
+        if (i < size && key.compareTo(keys[i]) == 0) {
+            return values[i];
+        }
+        else {
+            return null;
+        }
+
     }
 
     /**
@@ -61,7 +97,7 @@ public class BinarySearchST<Key extends Comparable, Value> implements SymbolTabl
      */
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     /**
@@ -70,6 +106,13 @@ public class BinarySearchST<Key extends Comparable, Value> implements SymbolTabl
      */
     @Override
     public Iterable<Key> keys() {
-        return null;
+        Queue<Key> q = new LinkedQueue<>();
+
+        //walk through keys array and enqueue all the keys
+        for (int i = 0; i < size; i++) {
+            q.enqueue(keys[i]);
+        }
+
+        return q;
     }
 }
