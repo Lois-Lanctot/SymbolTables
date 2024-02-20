@@ -1,4 +1,5 @@
 //BST - Binary Search Tree
+// see code in textbook p. 398-399
 public class BST<K extends Comparable<K>, V> implements SymbolTable<K, V> {
 
     private Node root;
@@ -33,7 +34,59 @@ public class BST<K extends Comparable<K>, V> implements SymbolTable<K, V> {
      */
     @Override
     public void put(K k, V val) {
+        root = put(root, k, val); //starts the recursion
+    }
 
+    private Node put(Node current, K key, V val) {
+        if (current == null) {
+            Node theNewNode = new Node(key, val);
+            theNewNode.nodesIntSubtree = 1;
+            return theNewNode;
+        }
+
+        int cmp = key.compareTo(current.key);
+
+        if (cmp < 0) {
+            current.left = put(current.left, key, val);
+        }
+        else if (cmp > 0) {
+            current.right = put(current.right, key, val);
+        }
+        else {
+            current.value = val;
+        }
+
+        current.nodesIntSubtree = size(current.left) + size(current.right) + 1;
+        return current;
+    }
+
+    /**
+     * Returns the value paired with the given key.
+     *
+     * @param
+     * @param keyToFind
+     */
+    @Override
+    public V get(K keyToFind) {
+        return get(root, keyToFind);
+    }
+
+    private V get(Node current, K keyToFind) {
+        if (current == null) {
+            return null;
+        }
+
+        int cmp = keyToFind.compareTo(current.key);
+
+        if (cmp < 0) { //left -1
+            return get(current.left, keyToFind);
+        }
+        else if (cmp > 0) { //right +1
+            return get(current.right, keyToFind);
+        }
+        else { //got it! 0
+            return current.value;
+        }
     }
 
     /**
@@ -41,8 +94,7 @@ public class BST<K extends Comparable<K>, V> implements SymbolTable<K, V> {
      *
      * @param keyToFind
      */
-    @Override
-    public V get(K keyToFind) {
+    public V getIterative(K keyToFind) {
         Node current = root;
 
         while (current != null) {
@@ -66,24 +118,6 @@ public class BST<K extends Comparable<K>, V> implements SymbolTable<K, V> {
         return null;
     }
 
-    private V get(Node current, K keyToFind) {
-        if (current != null) {
-            return null;
-        }
-
-        int cmp = keyToFind.compareTo(current.key);
-
-        if (cmp < 0) { //left -1
-            return get(current.left, keyToFind);
-        }
-        else if (cmp > 0) { //right +1
-            return get(current.right, keyToFind);
-        }
-        else { //got it! 0
-            return current.value;
-        }
-    }
-
     /**
      * Returns the number of key-value pairs in the table.
      *
@@ -95,7 +129,13 @@ public class BST<K extends Comparable<K>, V> implements SymbolTable<K, V> {
     }
 
     private int size(Node current) {
-        return size(current.left) + size(current.right) + 1;
+//        return size(current.left) + size(current.right) + 1;
+        if (current == null) {
+            return 0;
+        }
+        else {
+            return current.nodesIntSubtree;
+        }
     }
 
     /**
