@@ -9,7 +9,8 @@ public class Main {
 
 //        SymbolTable<String, Integer> table = new SequentialSearchST<>();
 //        SymbolTable<String, Integer> table = new BinarySearchST<>(100);
-        SymbolTable<String, Integer> table = new BST<>();
+//        SymbolTable<String, Integer> table = new BST<>();
+        SymbolTable<String, Integer> table = new SeperateChainingHashST<>();
 
 
 

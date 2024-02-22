@@ -1,5 +1,6 @@
 //BST - Binary Search Tree
 // see code in textbook p. 398-399
+// extends Comparable is a restriction - the keys have to be comparable
 public class BST<K extends Comparable<K>, V> implements SymbolTable<K, V> {
 
     private Node root;

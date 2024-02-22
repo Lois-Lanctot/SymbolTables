@@ -1,3 +1,4 @@
+//linked list
 public class SequentialSearchST<Key, Value>
         implements SymbolTable<Key, Value> {
 
